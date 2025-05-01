@@ -1,0 +1,83 @@
+/* about.css */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 40px;
+    background: linear-gradient(to bottom right, #ffe3ec, #f9f9f9);
+    color: #333;
+    margin: 0;
+}
+.navbar {
+    position: fixed;
+    top: 0; /* ← This is what ensures it's at the top */
+    left: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.about-container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    line-height: 1.8;
+    font-size: 18px;
+    animation: fadeIn 1s ease-in;
+}
+
+.about-container h1 {
+    text-align: center;
+    color: #d6336c;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    font-weight: bold;
+    border-bottom: 2px solid #ffc0cb;
+    padding-bottom: 10px;
+}
+
+.about-container p {
+    white-space: pre-line;
+    color: #555;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav-links {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        flex-direction: column;
+        padding: 20px;
+        border-radius: 5px;
+        display: none;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+}
+

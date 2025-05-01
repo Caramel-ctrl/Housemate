@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.dashboard-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.caretaker-details {
+    width: 40%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.caretaker-details h2 {
+    margin-bottom: 10px;
+}
+
+.logout-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #ff4d4d;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.booking-section {
+    width: 55%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.booking-section h3 {
+    margin-bottom: 15px;
+}
+
+/* Ensuring a neat layout for smaller screens */
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .caretaker-details, .booking-section {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+.logout-btn {
+    background: red;
+    color: white;
+    padding: 10px;
+    display: block;
+    text-decoration: none;
+    margin-top: 20px;
+    border-radius: 5px;
+}
