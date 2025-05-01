@@ -1,58 +1,108 @@
-<?php
-session_start();
-$conn = new mysqli("localhost", "root", "", "test_page");
-
-if (!isset($_SESSION['tenant_id'])) {
-    header("Location: tenant_login.php"); // Redirect if not logged in
-    exit();
-}
-
-$tenant_id = $_SESSION['tenant_id'];
-$property_id = $_GET['property_id'] ?? null;
-
-if ($property_id) {
-    $property = $conn->query("SELECT name FROM properties WHERE id = $property_id")->fetch_assoc();
-    $tenant = $conn->query("SELECT fullname FROM tenants WHERE id = $tenant_id")->fetch_assoc();
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $phone = $_POST["phone"];
-    $visit_time = $_POST["visit_time"];
-
-    $stmt = $conn->prepare("INSERT INTO bookings (tenant_id, property_id, phone, visit_time) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("iiss", $tenant_id, $property_id, $phone, $visit_time);
-    $stmt->execute();
-
-    echo "<script>alert('Booking successful!'); window.location.href='view_properties.php';</script>";
-    exit();
-}
-?>
+<?php include '../config/db.php'; ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
+<link rel="stylesheet" href="/Royalty/Tenants/css/navigation_bar.css">
+<link rel="stylesheet" href="/Royalty/Tenants/css/booking_visit.css">
+    
+
+
 <head>
-    <meta charset="UTF-8">
-    <title>Book Visit</title>
-    <link rel="stylesheet" href="/Royalty/global_theme/themes/properties.css">
+  <title>Book Property Viewing</title>
+  <!--style>
+    body {
+      font-family: Arial;
+      background-color: #f2f2f2;
+    }
+    .container {
+      width: 60%;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      margin-top: 40px;
+      border-radius: 8px;
+    }
+    .property {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+    }
+    form {
+      margin-top: 20px;
+    }
+    input, select {
+      padding: 8px;
+      margin-bottom: 10px;
+      width: 100%;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+    }
+  </style-->
 </head>
+<?php include '../logic/navigation_bar.php'; ?>
 <body>
-<div class="booking-form-container">
-    <h2>Book a Visit</h2>
-    <form method="post">
-        <label>Property:</label>
-        <input type="text" value="<?= $property['name']; ?>" readonly>
 
-        <label>Your Name:</label>
-        <input type="text" value="<?= $tenant['fullname']; ?>" readonly>
+<div class="container">
+  <h2>Select Apartment to Book Viewing</h2>
 
-        <label>Phone Number:</label>
-        <input type="tel" name="phone" required>
+  <form method="POST" action="">
+    <label>Select Apartment</label>
+    <select name="property_id" required>
+      <option value="">-- Choose Apartment --</option>
+      <?php
+        $result = $conn->query("SELECT * FROM properties");
+        while ($row = $result->fetch_assoc()) {
+          echo "<option value='" . $row['id'] . "'>" . $row['name'] . " - " . $row['location'] . "</option>";
+        }
+      ?>
+    </select>
 
-        <label>Visit Date & Time:</label>
-        <input type="datetime-local" name="visit_time" required>
+    <label>Your Full Name</label>
+    <input type="text" name="tenant_name" required>
 
-        <button type="submit">Confirm Booking</button>
-    </form>
+    <label>Your Phone Number</label>
+    <input type="text" name="tenant_phone" required>
+
+    <label>Preferred Day of Visit</label>
+    <input type="date" name="visit_day" required>
+
+    <label>Preferred Time</label>
+    <input type="time" name="visit_time" required>
+
+    <button type="submit" name="book">Book Visit</button>
+  </form>
+
+  <?php
+  if (isset($_POST['book'])) {
+    $property_id = $_POST['property_id'];
+    $tenant_name = $_POST['tenant_name'];
+    $tenant_phone = $_POST['tenant_phone'];
+    $visit_day = $_POST['visit_day'];
+    $visit_time = $_POST['visit_time'];
+
+    $stmt = $conn->prepare("INSERT INTO bookings (property_id, tenant_name, tenant_phone, visit_day, visit_time) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("issss", $property_id, $tenant_name, $tenant_phone, $visit_day, $visit_time);
+
+    if ($stmt->execute()) {
+      echo "<p style='color:green;'>Booking submitted! Await caretaker confirmation.</p>";
+    } else {
+      echo "<p style='color:red;'>Error: " . $stmt->error . "</p>";
+    }
+
+    $stmt->close();
+  }
+  ?>
+
 </div>
+
 </body>
 </html>
